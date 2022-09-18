@@ -33,38 +33,12 @@ pub fn new_video(deps: DepsMut, env: Env, video_info: VideoInfo) -> StdResult<Re
         let address = deps.api.addr_validate(&contract.address)?;
 
         if !Payment::is_snip20_registered(deps.storage, address.clone())? {
-            Payment::register_snip20(deps.storage, address)?;
-
-            response
-                .messages
-                .push(SubMsg::new(snip20::register_receive_msg(
-                    env.contract.code_hash,
-                    None, // No need for padding here since it's going to be public anyway
-                    1,    // No need for padding here since it's going to be public anyway
-                    contract.hash,
-                    contract.address,
-                )?));
+            // TODO: register this contract with the SNIP20
         }
     }
 
-    Ok(response.add_submessage(SubMsg::reply_on_success(
-        CosmosMsg::Wasm(WasmMsg::Instantiate {
-            code_id: config.access_token_wasm.code_id,
-            code_hash: config.access_token_wasm.hash,
-            msg: to_binary(&snip721::types::InitMsg {
-                name: video_info.name,
-                symbol: "DNFLX-".to_string() + &new_id.to_string(),
-                admin: None,             // Defaults to sender i.e. this contract
-                entropy: "".to_string(), // todo fix
-                royalty_info: Some(video_info.royalty_info),
-                config: None,
-                post_init_callback: None,
-            })?,
-            funds: vec![],
-            label: "dNetflix-access-".to_string() + &new_id.to_string(),
-        }),
-        ReplyId::InstantiateAccessToken as u64,
-    )))
+    // TODO: instantiate a new SNIP721
+    Ok(response)
 }
 
 pub fn purchase_video_snip20(
@@ -117,24 +91,7 @@ pub fn purchase_video_native(
         }
     };
 
-    let royalty_distribution = if let Token::Native(denom) = &video.info.price.token {
-        let payment = info.funds.iter().find(|c| c.denom == *denom);
-        if let Some(payment) = payment {
-            if payment.amount != video.info.price.amount {
-                Err(StdError::generic_err("invalid amount"))
-            } else {
-                Ok(create_royalty_distribution_native(
-                    &video.info.royalty_info,
-                    payment.amount.u128(),
-                    denom,
-                ))
-            }
-        } else {
-            Err(StdError::generic_err("invalid payment method"))
-        }
-    } else {
-        Err(StdError::generic_err("invalid payment method"))
-    }?;
+    let royalty_distribution: Vec<CosmosMsg> = vec![]; // TODO: validate payment method and get royalties
 
     Ok(purchase_video_impl(&video, &info.sender)?.add_messages(royalty_distribution))
 }
@@ -243,7 +200,7 @@ pub fn withdraw_token(
             amount,
             None,
             None,
-            256,
+            BLOCK_SIZE,
             snip20.hash,
             snip20.address,
         )?,

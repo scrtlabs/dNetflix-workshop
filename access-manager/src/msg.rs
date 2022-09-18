@@ -56,31 +56,9 @@ pub enum QueryMsg {
 #[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryAnswer {
-    VideoInfo { video: PublicVideo },
+    VideoInfo { video: Video }, // TODO fix
     Owner { address: Addr },
-    ListVideos { videos: Vec<PublicVideo> },
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "snake_case")]
-pub struct PublicVideo {
-    id: u64,
-    access_token: String,
-    name: String,
-    royalty_info: snip721::types::RoyaltyInfo,
-    price: Payment,
-}
-
-impl PublicVideo {
-    pub fn from(video: Video) -> Self {
-        Self {
-            id: video.id,
-            access_token: video.access_token.address,
-            name: video.info.name,
-            royalty_info: video.info.royalty_info,
-            price: video.info.price,
-        }
-    }
+    ListVideos { videos: Vec<Video> }, // TODO fix
 }
 
 #[derive(Deserialize)]
