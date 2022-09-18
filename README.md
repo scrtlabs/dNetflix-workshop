@@ -42,5 +42,5 @@ To come more prepared to the workshop, we encourage you to set up you environmen
   * Other IPFS provider of your choice
 
 * Clone the following repositories locally:
-  * [This one](https://github.com/scrtlabs/dNetflix)
+  * [This one](https://github.com/scrtlabs/dNetflix-workshop)
   * [mobile-video-example](https://github.com/scrtlabs/mobile-video-example)
