@@ -211,9 +211,9 @@ export default {
                                     decimal_places_in_rates: 2,
                                     royalties: [{ recipient: this.walletAddress, rate: parseInt(this.newVideo.royalty) }]
                                 },
-                                image_url: 'ipfs://QmaK5Y969GeFqcBmu5BAPWgXfwkU9hpQCYJRJyQdYtCBjz',
-                                video_url: 'ipfs://QmVbKFQRNx166RuqyyEb8XMwnw7GY57g7sXgcmxxKrL9ms/main.m3u8',
-                                decryption_key: 'UainRqKrHz_62Gfx0Qv4Hg',
+                                image_url: this.newVideo.image_url,
+                                video_url: this.newVideo.video_url,
+                                decryption_key: this.newVideo.decryption_key,
                                 price: { token: { native: 'uscrt' }, amount: scrtPrice }
                             }
                         },
