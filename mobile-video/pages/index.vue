@@ -80,8 +80,16 @@
                                 <v-card-title>Title: {{ item.name.toUpperCase() }}</v-card-title>
                                 <v-card-subtitle>{{ item.price }} SCRT</v-card-subtitle>
                                 <v-card-actions>
-                                    <v-btn v-if="item.purchesed === false" color="orange" :disabled="buying != -1" text @click="buy(item.id, item.price)">{{ buying == item.id ? 'Wait...' : 'Buy' }}</v-btn>
-                                    <v-btn v-if="item.purchesed === true" color="orange" :disabled="!item.video_url || !item.video_key" @click="playVideo(item.video_url, item.video_key, index)">Play Video</v-btn>
+                                    <v-btn v-if="item.purchesed === false" color="orange" :disabled="buying != -1" text @click="buy(item.id, item.price)">{{
+                                        buying == item.id ? 'Wait...' : 'Buy'
+                                    }}</v-btn>
+                                    <v-btn
+                                        v-if="item.purchesed === true"
+                                        color="orange"
+                                        :disabled="!item.video_url || !item.video_key"
+                                        @click="playVideo(item.video_url, item.video_key, index)"
+                                        >Play Video</v-btn
+                                    >
                                 </v-card-actions>
                             </v-card>
                         </v-col>
@@ -107,10 +115,11 @@ export default {
             minting: false,
 
             showAdd: false,
-            buying: -1, 
+            buying: -1,
             adding: false,
 
-            newVideo: { // Dummy data for new video upload, it can be blank
+            newVideo: {
+                // Dummy data for new video upload, it can be blank
                 name: '',
                 price: 1,
                 royalty: 15,
@@ -149,7 +158,7 @@ export default {
             loadingTokens: 'isLoadingTokens',
             totalTokens: 'getTotalTokens',
             loadedTokens: 'getLoadedTokens',
-            Videos: 'getVideoCollection',
+            Videos: 'getVideoCollection'
         }),
         progressBarValue() {
             if (this.totalTokens <= 0) {
@@ -163,7 +172,7 @@ export default {
             } else {
                 return `Loading ${Math.min(this.totalTokens, this.loadedTokens + 1)} / ${this.totalTokens}...`;
             }
-        },
+        }
     },
 
     methods: {
@@ -217,7 +226,7 @@ export default {
             } catch (err) {
                 console.log(err);
             }
-            this.adding = false;            
+            this.adding = false;
         },
 
         clearForm() {
@@ -234,23 +243,10 @@ export default {
         async buy(id, price) {
             this.buying = id;
             let scrtPrice = parseInt(parseFloat(price) * 1000000).toString();
-            let res = await this.secretjs.tx.compute.executeContract(
-                {
-                contractAddress: process.env.NUXT_ENV_CONTRACT,
-                msg: {
-                    purchase_video: {
-                        video_id: id,
-                    },
-                },
-                sender: this.walletAddress,
-                sentFunds: [{ denom: "uscrt", amount: scrtPrice }],
-                },
-                { gasLimit: 500_000 }
-            );
-            res = res.arrayLog.find((l) => l.key === "minted");
+            let res = {}; // TODO: send a tx to purchase video
+            res = res.arrayLog.find((l) => l.key === 'minted');
             this.buying = -1;
             this.listVideos();
-
         }
     }
 };
