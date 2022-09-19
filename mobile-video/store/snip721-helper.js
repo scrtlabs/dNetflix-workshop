@@ -11,7 +11,8 @@ export const getVideoCollectionPermit = async (secretJS, walletAddress, contract
     if (!permit) {
         console.log('Loading new permit');
         try {
-            const result = await secretJS.utils.accessControl.permit.sign(walletAddress, chainId, 'scrtFlix-permit', contractList, ['balance', 'owner']);
+            // TODO create a permit for the contract list
+            const result = {};
             permit = result;
 
             // Store the new permit in the browser local storage
